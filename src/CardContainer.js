@@ -10,7 +10,8 @@ const CardContainer = () => {
     useEffect(() => {
         const getCard = async () => {
             const res = await axios.get(apiData.url);
-            setCardData(cardData => ({imgSrc: res.data.cards[0].image, deckId: res.data.deck_id}));
+            if (res.data.remaining === 0) alert("No cards left");
+            else setCardData(cardData => ({imgSrc: res.data.cards[0].image, deckId: res.data.deck_id}));
         }
         getCard()
     }, [apiData])
