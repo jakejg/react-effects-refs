@@ -4,22 +4,30 @@ import axios from 'axios';
 
 
 const CardContainer = () => {
-    const [cardImg, setCardImg] = useState(null)
-    const [url , setUrl] = useState("https://deckofcardsapi.com/api/deck/new/draw/?count=1")
+    const [cardData, setCardData] = useState({})
+    const [apiData , setApiData] = useState({url: "https://deckofcardsapi.com/api/deck/new/draw/?count=1", drawCount: 0})
 
     useEffect(() => {
         const getCard = async () => {
-            const res = await axios.get(url);
-            setCardImg(data => res.data.cards[0].image);
+            const res = await axios.get(apiData.url);
+            setCardData(cardData => ({imgSrc: res.data.cards[0].image, deckId: res.data.deck_id}));
         }
         getCard()
-    }, [url])
+    }, [apiData])
+
+
+    const draw = () => {
+        setApiData(apiData => ({
+                    url: `https://deckofcardsapi.com/api/deck/${cardData.deckId}/draw/?count=1`,
+                    drawCount: apiData.draw + 1}
+        ))
+    }
 
 
     return (
         <>
-            <Card imgSrc={cardImg} />
-            <button>Draw Card</button>
+            <Card imgSrc={cardData.imgSrc} />
+            <button onClick={draw}>Draw Card</button>
         </>
     )
 }
